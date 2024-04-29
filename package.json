@@ -1,0 +1,11 @@
+{
+    "name": "zip-module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "directories": {},
+    "scripts": {},
+    "keywords": [],
+    "author": "Darco2903",
+    "license": "ISC"
+}
