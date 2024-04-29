@@ -79,7 +79,8 @@ async function walk(dir, root = "") {
 async function create(name, sources, { progressCb, root = process.cwd(), test = false } = {}) {
     return new Promise(async (resolve, reject) => {
         if (!Array.isArray(sources)) sources = [sources];
-        const cmd = `${ZIP_CMD} -cvf ${path.relative(root, name)} ${sources.join(" ")}`;
+        sources = sources.map((s) => `"${s}"`).join(" ");
+        const cmd = `${ZIP_CMD} -cvf "${path.relative(root, name)}" ${sources}`;
         const promises = sources.map(async (s) => {
             const p = path.join(root, s);
             const stat = await fs.stat(p);
@@ -106,7 +107,7 @@ async function create(name, sources, { progressCb, root = process.cwd(), test = 
 
 async function extract(archiveName, dest, { progressCb, test = false } = {}) {
     return new Promise(async (resolve, reject) => {
-        const cmd = `${ZIP_CMD} -xvf ${archiveName} -C ${dest}`;
+        const cmd = `${ZIP_CMD} -xvf "${archiveName}" -C "${dest}"`;
         const archiveFiles = await list(archiveName);
         const total = archiveFiles.length;
 
@@ -126,12 +127,12 @@ async function extract(archiveName, dest, { progressCb, test = false } = {}) {
 }
 
 async function list(archiveName) {
-    const cmd = `${ZIP_CMD} -tf ${archiveName}`;
+    const cmd = `${ZIP_CMD} -tf "${archiveName}"`;
     return execPromise(cmd).then((stdout) => stdout.split(lineEnd).slice(0, -1));
 }
 
 async function listStats(archiveName) {
-    const cmd = `${ZIP_CMD} -tvf ${archiveName}`;
+    const cmd = `${ZIP_CMD} -tvf "${archiveName}"`;
     return execPromise(cmd, { shell: "bash" }).then((stdout) => stdout.split(linLineEnd).slice(0, -1).map(parseStatLin));
 }
 
