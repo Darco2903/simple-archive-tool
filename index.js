@@ -26,7 +26,7 @@ function test(files, toTest) {
 }
 
 async function testArchive(name, files) {
-    const archiveFiles = (await listFiles(name)).map((f) => (f.endsWith("/") ? f.substring(0, f.length - 1) : f));
+    const archiveFiles = (await list(name)).map((f) => (f.endsWith("/") ? f.substring(0, f.length - 1) : f));
     files = files.map((f) => f.replaceAll(/\\/g, "/"));
     return test(files, archiveFiles);
 }
@@ -107,7 +107,7 @@ async function create(name, sources, { progressCb, root = process.cwd(), test = 
 async function extract(archiveName, dest, { progressCb, test = false } = {}) {
     return new Promise(async (resolve, reject) => {
         const cmd = `${ZIP_CMD} -xvf ${archiveName} -C ${dest}`;
-        const archiveFiles = await listFiles(archiveName);
+        const archiveFiles = await list(archiveName);
         const total = archiveFiles.length;
 
         const child = exec(cmd, { shell: true }, async (err, stdout, stderr) => {
@@ -125,12 +125,12 @@ async function extract(archiveName, dest, { progressCb, test = false } = {}) {
     });
 }
 
-async function listFiles(archiveName) {
+async function list(archiveName) {
     const cmd = `${ZIP_CMD} -tf ${archiveName}`;
     return execPromise(cmd).then((stdout) => stdout.split(lineEnd).slice(0, -1));
 }
 
-async function listFilesStats(archiveName) {
+async function listStats(archiveName) {
     const cmd = `${ZIP_CMD} -tvf ${archiveName}`;
     return execPromise(cmd, { shell: "bash" }).then((stdout) => stdout.split(linLineEnd).slice(0, -1).map(parseStatLin));
 }
@@ -138,6 +138,6 @@ async function listFilesStats(archiveName) {
 module.exports = {
     create,
     extract,
-    listFiles,
-    listFilesStats,
+    list,
+    listStats,
 };

@@ -53,11 +53,11 @@ export async function extract(
  *
  * @param archiveName The name of the archive
  */
-export async function listFiles(archiveName: string): Promise<string[]>;
+export async function list(archiveName: string): Promise<string[]>;
 
 /**
  * Return the file list of an archive with stats
  *
  * @param archiveName The name of the archive
  */
-export async function listFilesStats(archiveName: string): Promise<FileStat[]>;
+export async function listStats(archiveName: string): Promise<FileStat[]>;
