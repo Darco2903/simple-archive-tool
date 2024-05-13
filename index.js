@@ -105,10 +105,10 @@ async function create(name, sources, { progressCb, root = process.cwd(), test = 
     });
 }
 
-async function extract(archiveName, dest, { progressCb, test = false } = {}) {
+async function extract(archivePath, dest, { progressCb, test = false } = {}) {
     return new Promise(async (resolve, reject) => {
-        const cmd = `${ZIP_CMD} -xvf "${archiveName}" -C "${dest}"`;
-        const archiveFiles = await list(archiveName);
+        const cmd = `${ZIP_CMD} -xvf "${archivePath}" -C "${dest}"`;
+        const archiveFiles = await list(archivePath);
         const total = archiveFiles.length;
 
         const child = exec(cmd, { shell: true }, async (err, stdout, stderr) => {
@@ -126,8 +126,8 @@ async function extract(archiveName, dest, { progressCb, test = false } = {}) {
     });
 }
 
-async function list(archiveName) {
-    const cmd = `${ZIP_CMD} -tf "${archiveName}"`;
+async function list(archivePath) {
+    const cmd = `${ZIP_CMD} -tf "${archivePath}"`;
     return execPromise(cmd).then((stdout) => stdout.split(lineEnd).slice(0, -1));
 }
 

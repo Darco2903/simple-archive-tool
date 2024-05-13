@@ -33,14 +33,14 @@ export async function create(
 /**
  * Extract a zip archive
  *
- * @param archiveName The name of the archive
+ * @param archivePath The name of the archive
  * @param dest The destination directory
  * @param options Options
  * @param options.progressCb A callback that will be called with the progress of the operation
  * @param options.test If true, the extracted files will be tested after extraction
  */
 export async function extract(
-    archiveName: string,
+    archivePath: string,
     dest: string,
     options?: {
         progressCb: ProgressCallback;
@@ -51,13 +51,13 @@ export async function extract(
 /**
  * Return the file list of an archive
  *
- * @param archiveName The name of the archive
+ * @param archivePath The name of the archive
  */
-export async function list(archiveName: string): Promise<string[]>;
+export async function list(archivePath: string): Promise<string[]>;
 
 /**
  * Return the file list of an archive with stats
  *
- * @param archiveName The name of the archive
+ * @param archivePath The name of the archive
  */
-export async function listStats(archiveName: string): Promise<FileStat[]>;
+export async function listStats(archivePath: string): Promise<FileStat[]>;
