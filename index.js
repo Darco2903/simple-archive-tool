@@ -38,9 +38,14 @@ async function testExtract(archiveFiles, dest) {
     return test(archiveFiles, files);
 }
 
+function parseStatWin(line) {
+    let [permissions, owner, group, _, size, month, day, year, ...name] = line.split(/\s+/);
+    return parseStat("", "", "", size, "", "", name.filter((n) => n).join(" "));
+}
+
 function parseStatLin(line) {
-    let [permissions, ownerGroup, size, date, time, name] = line.split(/\s+/);
-    return parseStat(permissions, ...ownerGroup.split("/"), size, date, time, name);
+    let [permissions, ownerGroup, size, date, time, ...name] = line.split(/\s+/);
+    return parseStat(permissions, ...ownerGroup.split("/"), size, date, time, name.filter((n) => n).join(" "));
 }
 
 function parseStat(permissions, owner, group, size, date, time, name) {
