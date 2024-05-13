@@ -1,6 +1,6 @@
 {
-    "name": "zip-module",
-    "version": "0.1.0",
+    "name": "simple-archive-tool",
+    "version": "0.1.1",
     "description": "",
     "main": "index.js",
     "directories": {},

@@ -1,8 +1,8 @@
-# Zip Module
+# Simple Archive Tool
 
 ## Description
 
-This is a simple module that allows you to play with zip files in Node.js. To do so, it uses the `tar` command on both Windows and Linux (not tested on MacOS).
+This is a simple module that allows you to play with archives (zip/tar) files in Node.js. To do so, it uses the `tar` command on both Windows and Linux (not tested on MacOS).
 
 ## Features
 
@@ -17,19 +17,19 @@ This is a simple module that allows you to play with zip files in Node.js. To do
 ## Installation
 
 ```bash
-npm install zip-module
+npm install simple-archive-tool
 ```
 
 ## Usage
 
 ```js
-const zip = require("zip-module");
+const zip = require("simple-archive-tool");
 
 // list files in archive
-const files = zip.list("archive.zip");
+zip.list("archive.zip");
 
 // list files in archive with stats
-const stats = zip.listStats("archive.zip");
+zip.listStats("archive.zip");
 
 // Zip single or multiple paths (directories or files)
 zip.create("archive.zip", "toZip");
@@ -50,7 +50,9 @@ zip.create("archive.zip", "toZip", {
 });
 ```
 
-#### Create and extract have also a test option that can be used to test either if the archive creation or extraction is successful
+#### Create and extract have also a test option that can be used to test either if the archive creation or extraction is successful.
+
+:warning: The test is a simple output read to check if all files are there. (When creating an archive, the test option will list the files in the archive and compare them with the files that were supposed to be archived. When extracting an archive, the test option will list the files in the output directory and compare them with the files that were supposed to be extracted.)
 
 ```js
 const success = await zip.create("archive.zip", "toZip", {
