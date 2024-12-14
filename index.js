@@ -84,16 +84,24 @@ async function walk(dir, root = "") {
 async function create(name, sources, { progressCb, root = process.cwd(), test = false } = {}) {
     return new Promise(async (resolve, reject) => {
         if (!Array.isArray(sources)) sources = [sources];
-        sources = sources.map((s) => `"${s}"`).join(" ");
-        const cmd = `${ZIP_CMD} -cvf "${path.relative(root, name)}" ${sources}`;
+        const cmdSource = sources.map((s) => `"${path.relative(root, s)}"`).join(" ");
+        const cmd = `${ZIP_CMD} -cvf "${path.relative(root, name)}" ${cmdSource}`;
         const promises = sources.map(async (s) => {
-            const p = path.join(root, s);
+            const p = path.isAbsolute(s) ? s : path.join(root, s);
             const stat = await fs.stat(p);
-            return stat.isDirectory() ? await walk(p, root) : path.relative(root, p);
+            const a = stat.isDirectory() ? await walk(p, root) : path.relative(root, p);
+            // console.log(a);
+
+            return a;
         });
 
         const files = (await Promise.all(promises)).flat();
         const total = files.length;
+        // console.log(files);
+        // console.log(root);
+        // console.log(cmd);
+
+        // process.exit(0);
 
         const child = exec(cmd, { cwd: root }, async (err, stdout, stderr) => {
             if (err) reject(err);
@@ -136,9 +144,35 @@ async function list(archivePath) {
     return execPromise(cmd).then((stdout) => stdout.split(lineEnd).slice(0, -1));
 }
 
-async function listStats(archiveName) {
-    const cmd = `${ZIP_CMD} -tvf "${archiveName}"`;
-    return execPromise(cmd, { shell: "bash" }).then((stdout) => stdout.split(linLineEnd).slice(0, -1).map(parseStatLin));
+async function listStats(archivePath) {
+    throw new Error("Not implemented");
+    
+    archivePath = path.relative(".", archivePath);
+    archivePath = "./" + archivePath.replaceAll(/\\/g, "/");
+    // const tarArchive = archivePath.replace(path.extname(archivePath), ".zip");
+    // await fs.rename(archivePath, tarArchive);
+    // const cmd = `${ZIP_CMD} -tvf "${tarArchive}"`;
+    const cmd = `${ZIP_CMD} -tvf "${archivePath}"`;
+    const res = await execPromise(cmd, { shell: "bash" }).then((stdout) => stdout.split(linLineEnd).slice(0, -1).map(parseStatLin));
+    // await fs.rename(tarArchive, archivePath);
+    return res;
+}
+
+async function listSize(archivePath) {
+    const l = await list(archivePath);
+    const cmd = `${ZIP_CMD} -tvf "${archivePath}"`;
+    return execPromise(cmd).then((stdout) =>
+        stdout
+            .split(linLineEnd)
+            .slice(0, -1)
+            .map(isWin ? parseStatWin : parseStatLin)
+            .map((s, i) => {
+                return {
+                    size: s.size,
+                    name: l[i],
+                };
+            })
+    );
 }
 
 module.exports = {
@@ -146,4 +180,5 @@ module.exports = {
     extract,
     list,
     listStats,
+    listSize,
 };

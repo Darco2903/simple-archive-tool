@@ -55,9 +55,16 @@ export async function extract(
  */
 export async function list(archivePath: string): Promise<string[]>;
 
+// /**
+//  * Return the file list of an archive with stats
+//  *
+//  * @param archivePath The name of the archive
+//  */
+// export async function listStats(archivePath: string): Promise<FileStat[]>;
+
 /**
  * Return the file list of an archive with stats
  *
  * @param archivePath The name of the archive
  */
-export async function listStats(archivePath: string): Promise<FileStat[]>;
+export async function listSize(archivePath: string): Promise<FileStat[]>;
